@@ -28,7 +28,8 @@ COPY resources/ ./resources/
 RUN mkdir -p /app/data
 
 # Expose port for Flask application
-EXPOSE 5000
+EXPOSE 5000/tcp
+EXPOSE 5000/udp
 
 # Set environment variables for MinIO (these will be overridden at runtime)
 ENV MINIO_USER=minioadmin \
