@@ -21,18 +21,20 @@ def handle():
 
     print("PUT EVENT")
     print(event)
+    try:
+        for record in event.get('Records', []):
+            bucket = record['s3']['bucket']['name']
+            obj = record['s3']['object']['key']
 
-    for record in event.get('Records', []):
-        bucket = record['s3']['bucket']['name']
-        obj = record['s3']['object']['key']
+            minio.fget_object(bucket, obj, mdf_in_path)
 
-        minio.fget_object(bucket, obj, mdf_in_path)
+            with open(mdf_in_path, 'rb') as mdf_in_file, MDF(mdf_in_file) as mdf_in:
+                handle_mdf(mdf_in)
 
-        with open(mdf_in_path, 'rb') as mdf_in_file, MDF(mdf_in_file) as mdf_in:
-            handle_mdf(mdf_in)
-
-        with open(mdf_out_path + ".csv", 'r') as mdf_file_out:
-            minio.fput_object(output_bucket, obj, mdf_file_out.read())
+            with open(mdf_out_path + ".csv", 'r') as mdf_file_out:
+                minio.fput_object(output_bucket, obj, mdf_file_out.read())
+    except Exception:
+        print('Some went wrong...')
 
     return '', 200
 
