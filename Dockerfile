@@ -1,5 +1,4 @@
-# Use Python 3.9 as the base image
-FROM python:3.9-slim
+FROM python:3
 
 # Set working directory
 WORKDIR /app
@@ -9,15 +8,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     VIRTUAL_ENV=/app/venv
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    gcc \
-    g++ \
-    cmake \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
 # Create virtual environment
 RUN python -m venv /app/venv
 
@@ -26,11 +16,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Copy requirements file
 COPY requirements.txt .
-
-# Clone libdeflate repository to ensure it's available for the build process
-RUN mkdir -p /tmp/ext && \
-    cd /tmp && \
-    git clone https://github.com/ebiggers/libdeflate.git ext/libdeflate
 
 # Install dependencies in the virtual environment
 RUN pip install --no-cache-dir -r requirements.txt
