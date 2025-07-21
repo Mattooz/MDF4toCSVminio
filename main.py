@@ -5,21 +5,26 @@ import os
 from flask import Flask, request
 from minio import Minio
 
-app             = Flask(__name__)
-minio           = Minio(endpoint='minio:9000', access_key=os.environ['MINIO_USER'], secret_key=os.environ['MINIO_PSW'], secure=False)
+app = Flask(__name__)
+minio = Minio(endpoint='minio:9000', access_key=os.environ['MINIO_USER'], secret_key=os.environ['MINIO_PSW'],
+              secure=False)
 
-mdf_in_path     = os.path.join('.', 'mdf_in.mf4')
-mdf_out_path    = os.path.join('.', 'mdf_out')
+mdf_in_path = os.path.join('.', 'mdf_in.mf4')
+mdf_out_path = os.path.join('.', 'mdf_out')
 
-output_bucket   = 'output'
+output_bucket = 'output'
+
 
 @app.route(rule='/mdf-handle', methods=['POST'])
 def handle():
     event = request.json
 
+    print("PUT EVENT")
+    print(event)
+
     for record in event.get('Records', []):
-        bucket = event['s3']['bucket']['name']
-        obj = event['s3']['object']['key']
+        bucket = record['s3']['bucket']['name']
+        obj = record['s3']['object']['key']
 
         minio.fget_object(bucket, obj, mdf_in_path)
 
@@ -31,6 +36,7 @@ def handle():
 
     return '', 200
 
+
 def handle_mdf(mdf: MDF):
     decoded = mdf.extract_bus_logging(
         database_files={
@@ -38,7 +44,8 @@ def handle_mdf(mdf: MDF):
         }
     )
 
-    decoded.export(fmt='csv', filename=mdf_out_path , single_time_base=True)
+    decoded.export(fmt='csv', filename=mdf_out_path, single_time_base=True)
+
 
 if __name__ == '__main__':
     app.run(port=5000)
