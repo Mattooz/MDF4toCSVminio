@@ -49,8 +49,12 @@ The Dockerfile installs the following build dependencies to support the compilat
 - build-essential
 - gcc
 - g++
+- cmake
+- git
 
-These dependencies are necessary for the proper installation of asammdf and its requirements.
+Additionally, the Dockerfile clones the libdeflate repository to ensure it's available during the build process. This is necessary because asammdf or one of its dependencies requires libdeflate for compression functionality.
+
+These dependencies and steps are necessary for the proper installation of asammdf and its requirements.
 
 ## Environment Variables
 
