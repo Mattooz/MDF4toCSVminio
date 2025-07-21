@@ -43,6 +43,15 @@ The application exposes a single endpoint:
 - `resources/`: Contains DBC files for CAN bus decoding
 - `Dockerfile`: Instructions for building the Docker image
 
+## Dependencies
+
+The Dockerfile installs the following build dependencies to support the compilation of C extensions required by asammdf:
+- build-essential
+- gcc
+- g++
+
+These dependencies are necessary for the proper installation of asammdf and its requirements.
+
 ## Environment Variables
 
 - `MINIO_USER`: MinIO access key (default: minioadmin)
