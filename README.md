@@ -1,3 +1,5 @@
+> **_Nota per il Professore:_**  Il diario dei progressi si trova sempre su questa repo. Il file è (progress.txt)[https://github.com/Mattooz/MDF4toCSVminio/blob/master/progress.txt]
+
 # MDF4 to CSV Converter with MinIO Integration
 
 This application processes MDF4 files, extracts data using CAN bus logging, and converts them to CSV format. It integrates with MinIO for object storage.
@@ -49,5 +51,3 @@ At the moment, there are the only variables available, but in the future I plan 
 
 - `MINIO_USER`: MinIO access key (default: minioadmin)
 - `MINIO_PSW`: MinIO secret key (default: minioadmin)
-
-> **_Nota per il Professore:_**  Il diario dei progressi si trova sempre su questa repo.
