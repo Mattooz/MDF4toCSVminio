@@ -28,7 +28,7 @@ docker run -p 5000:5000 -e MINIO_USER=your_access_key -e MINIO_PSW=your_secret_k
 
 ### Connecting to a MinIO Server
 
-The application expects a MinIO server to be available at `minio:9000`. You'll need to set-up docker compose, a sample docker compose can be found [here](https://gist.github.com/Mattooz/99c5876133c1da671c377d8095745fa1)
+The application expects a MinIO server to be available at `minio:9000`. Therefor, you'll need to set-up docker compose. A sample compose.yaml can be found [here](https://gist.github.com/Mattooz/99c5876133c1da671c377d8095745fa1).
 
 ## API Usage
 
@@ -44,7 +44,7 @@ The application exposes a single endpoint:
 - `Dockerfile`: Instructions for building the Docker image
 
 ## Environment Variables
-For the time being these are the only variables. In the future I plan to add env vars to add DBCs, change port to the webhook, change port or address to the minio server and more, as to have a more configurable application.
+At the moment, there are the only variables available, but in the future I plan to add more.
 
 - `MINIO_USER`: MinIO access key (default: minioadmin)
 - `MINIO_PSW`: MinIO secret key (default: minioadmin)
