@@ -20,21 +20,25 @@ def handle():
     event = request.json
 
     print("PUT EVENT")
-    print(event)
     try:
         for record in event.get('Records', []):
             bucket = record['s3']['bucket']['name']
             obj = record['s3']['object']['key']
 
+            print(f"Processing new file! Bucket: '{bucket}', File: '{obj}'.")
+
             minio.fget_object(bucket, obj, mdf_in_path)
 
-            with open(mdf_in_path, 'rb') as mdf_in_file, MDF(mdf_in_file) as mdf_in:
+            with open(mdf_in_path, 'rb+') as mdf_in_file, MDF(mdf_in_file) as mdf_in:
                 handle_mdf(mdf_in)
 
-            with open(mdf_out_path + ".csv", 'r') as mdf_file_out:
-                minio.fput_object(output_bucket, obj, mdf_file_out.read())
-    except Exception:
-        print('Some went wrong...')
+            basename = os.path.basename(obj) + ".csv"
+
+            minio.fput_object(output_bucket, basename, mdf_out_path + ".csv")
+
+            print(f"Done processing! Uploaded file '{basename}' to bucket '{output_bucket}'")
+    except Exception as e:
+        print('Some went wrong: ', e)
 
     return '', 200
 
@@ -46,8 +50,8 @@ def handle_mdf(mdf: MDF):
         }
     )
 
-    decoded.export(fmt='csv', filename=mdf_out_path, single_time_base=True)
+    decoded.export(fmt='csv', filename=mdf_out_path, single_time_base=True, delimiter=',', quotechar='"', escapechar='\\')
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(host='0.0.0.0',port=5000)
