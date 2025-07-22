@@ -1,0 +1,25 @@
+18/07
+
+- INIZIO PROGETTO
+\-	preparato il compose.yaml (per webhook e minio) per facile replicazione su altre macchine
+\-	minio non supporta le funzioni lambda come le istanze S3 di AWS
+|	\- 	una funzione lambda trasforma i dati da un bucket detto "input" in un altra forma e li salva in un bucket detto "output"
+|	\-	tuttavia, minio supporta eventi e riesce a chiamare tramite webhook un servizio (un webserver flask, a scapito di trovare librerie più performanti per gestire
+|		file mf4) che simula la funzione lambda (la traduzione del file mf4 in uno più facilmente leggibile, come csv).
+|
+\-	va ancora capito come si 'decodano' i file mf4, visto che al loro interno non hanno dati che sono immediatamente leggibili
+\- 	verrà creata una repo github non appena arriverò ad avere lambda e minio funzionanti
+
+21/07
+
+- MINIO E WEBHOOK FUNZIONANTI
+\-  i file mf4 si 'decodano' tramite file DBC. Ogni produttore di auto ha il suo (ovviamente) e la maggior parte non sono disponibili al pubblico.
+|   \-  fortunatamente alcuni dati, quelli più basici e comuni (come giri motore, velocità, ecc...) possono essere estratti dal DBC OBD2 generale (che ho incluso nella repo)
+|   \-  inoltre, esistono DBC che sono stati ricostruiti (tramite reverese engineering) e sono open-source
+|   \-  pianifico di aggiungerli e di creare un modo di aggiungerli tramite environment variabile (così è facile metterli dal compose.yaml)
+|
+\-  ho finito di creare il compose.yaml ed è assolutamente possibile farlo girare.
+|   \- basterà semplicemente buildare l'immagine docker tramite i comandi listati nel readme e copiare il compose.yaml
+|
+\-  non penso sia strettamente necessario, ma andrebbe creato un playbook ansible che tira scarica tutte le dipendenze e tiri su tutti i servizi e nel caso questo progetto entrasse in produzione sarebbe necessario migrare tutto su docker swarm o su
+    qualche altro orchestratore
