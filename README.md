@@ -28,7 +28,7 @@ docker run -p 5000:5000 -e MINIO_USER=your_access_key -e MINIO_PSW=your_secret_k
 
 ### Connecting to a MinIO Server
 
-The application expects a MinIO server to be available at `minio:9000`. You can use Docker Compose to set up both services together, or modify the endpoint in the application code.
+The application expects a MinIO server to be available at `minio:9000`. You'll need to set-up docker compose, a sample docker compose can be found [here](https://gist.github.com/Mattooz/99c5876133c1da671c377d8095745fa1)
 
 ## API Usage
 
@@ -43,20 +43,10 @@ The application exposes a single endpoint:
 - `resources/`: Contains DBC files for CAN bus decoding
 - `Dockerfile`: Instructions for building the Docker image
 
-## Dependencies
-
-The Dockerfile installs the following build dependencies to support the compilation of C extensions required by asammdf:
-- build-essential
-- gcc
-- g++
-- cmake
-- git
-
-Additionally, the Dockerfile clones the libdeflate repository to ensure it's available during the build process. This is necessary because asammdf or one of its dependencies requires libdeflate for compression functionality.
-
-These dependencies and steps are necessary for the proper installation of asammdf and its requirements.
-
 ## Environment Variables
+For the time being these are the only variables. In the future I plan to add env vars to add DBCs, change port to the webhook, change port or address to the minio server and more, as to have a more configurable application.
 
 - `MINIO_USER`: MinIO access key (default: minioadmin)
 - `MINIO_PSW`: MinIO secret key (default: minioadmin)
+
+> **_Nota per il Professore:_**  Il diario dei progressi si trova sempre su questa repo.
