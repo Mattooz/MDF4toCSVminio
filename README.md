@@ -1,6 +1,7 @@
 # MDF4 to CSV Converter with MinIO Integration
 
 This application processes MDF4 files, extracts data using CAN bus logging, and converts them to CSV format. It integrates with MinIO for object storage.
+It only has one DBC file, so it is quite basic at the moment. I plan to add more and a way to add custom one via environment variables.
 
 ## Docker Setup
 
