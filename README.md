@@ -1,4 +1,4 @@
-> **_Nota per il Professore:_**  Il diario dei progressi si trova sempre su questa repo. Il file è (progress.txt)[https://github.com/Mattooz/MDF4toCSVminio/blob/master/progress.txt]
+> **_Nota per il Professore:_**  Il diario dei progressi si trova sempre su questa repo. Il file è 'progress.txt'.
 
 # MDF4 to CSV Converter with MinIO Integration
 
