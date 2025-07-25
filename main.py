@@ -75,5 +75,5 @@ def setup():
     os.makedirs(tmp_folder, exist_ok=True)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5000)
+    app.run(host='0.0.0.0',port=5000, debug=True)
     app.logger.info("Server started")
