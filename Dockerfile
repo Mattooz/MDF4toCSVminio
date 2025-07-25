@@ -22,7 +22,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code and resources
 COPY main.py .
-COPY resources/ ./resources/
+COPY resources/config.toml ./resources/
+
+# default volume for dbc files
+VOLUME /dbc
+
+# Copy DBC file to the volume
+COPY resources/11-bit-OBD2-v4.0.dbc /dbc/
 
 # Create directories for temporary files
 RUN mkdir -p /app/data
@@ -34,7 +40,8 @@ EXPOSE 5000/udp
 # Set environment variables for MinIO (these will be overridden at runtime)
 ENV MINIO_USER=minioadmin \
     MINIO_PSW=minioadmin \
-    MINIO_URL=minio:9000
+    MINIO_URL=minio:9000 \
+    CONFIG_PATH=resources/config.toml
 
 # Command to run the application
 CMD ["python", "main.py"]

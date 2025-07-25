@@ -1,0 +1,7 @@
+[dbc]
+volume='/dbc'
+
+[[dbc.src]]
+filepath='11-bit-OBD2-v4.0.dbc'
+can_bus_channel=0
+
