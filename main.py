@@ -16,8 +16,8 @@ OUTPUT_BUCKET   = 'output'
 
 DBC_VOLUME      = os.environ['DBC_VOLUME']
 
-CONFIG_VOLUME      = os.environ['CONFIG_VOLUME']
-CONFIG_PATH    = os.environ['CONFIG_PATH']
+CONFIG_VOLUME       = os.environ['CONFIG_VOLUME']
+CONFIG_PATH         = os.environ['CONFIG_PATH']
 
 DATA = {}
 
@@ -120,7 +120,7 @@ def copy_defaults(config_path):
             config_ok = False
     
     default_dbc_filename = '11-bit-OBD2-v4.0.dbc'
-    default_dbc_path = os.path.join('resources', default_dbc_filename)
+    default_dbc_path = os.path.join('.', 'resources', default_dbc_filename)
     target_dbc_path = os.path.join(DBC_VOLUME, default_dbc_filename)
     
     if os.path.exists(target_dbc_path):
@@ -141,10 +141,11 @@ def copy_defaults(config_path):
 
 
 if __name__ == '__main__':
+    APP.run(host='0.0.0.0', port=5000, debug=True)
+    APP.logger.info("Server started")
+
     if not copy_defaults(CONFIG_PATH):
         raise Exception(f"Failed to find or create defaults at {CONFIG_PATH}")
 
     fetch_config()
 
-    APP.run(host='0.0.0.0', port=5000, debug=True)
-    APP.logger.info("Server started")
