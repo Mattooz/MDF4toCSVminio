@@ -125,7 +125,7 @@ def copy_defaults(config_path):
 
     all_entries = os.listdir(os.path.join('.', 'resources'))
     bll_entries = os.listdir(os.path.join('.'))
-    # Filter out directori
+
     print(all_entries)
     print(bll_entries)
     
@@ -147,6 +147,9 @@ def copy_defaults(config_path):
 
 
 if __name__ == '__main__':
+    with open('./resources/11-bit-OBD2-v4.0.dbc', 'r') as f:
+        print(f.read())
+
     APP.run(host='0.0.0.0', port=5000, debug=True)
     APP.logger.info("Server started")
 
