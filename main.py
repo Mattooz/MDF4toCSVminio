@@ -122,6 +122,12 @@ def copy_defaults(config_path):
     default_dbc_filename = '11-bit-OBD2-v4.0.dbc'
     default_dbc_path = os.path.join('.', 'resources', default_dbc_filename)
     target_dbc_path = os.path.join(DBC_VOLUME, default_dbc_filename)
+
+    all_entries = os.listdir(os.path.join('.', 'resources'))
+    bll_entries = os.listdir(os.path.join('.'))
+    # Filter out directori
+    print(all_entries)
+    print(bll_entries)
     
     if os.path.exists(target_dbc_path):
         APP.logger.info(f"DBC file found at {target_dbc_path}")
