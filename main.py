@@ -14,6 +14,7 @@ MINIO           = Minio(endpoint=os.environ['MINIO_URL'], access_key=os.environ[
 TMP_FOLDER      = os.path.join('.', 'tmp')
 OUTPUT_BUCKET   = 'output'
 
+CONFIG_VOLUME      = os.environ['CONFIG_VOLUME']
 DBC_CONFIG_PATH    = os.environ['CONFIG_PATH']
 
 DATA = {}
@@ -48,7 +49,9 @@ def handle():
 
 
 def handle_mdf(mdf: MDF, name: str):
-    config = get_config()
+    config = DATA['config'] if 'config' in DATA else None
+    if config is None:
+        APP.logger.warning("No config found, using default DBC file")
     dbc_volume = config['dbc']['volume'] if config and 'dbc' in config and 'volume' in config['dbc'] else '/dbc'
     dbc_files = []
     
@@ -94,9 +97,29 @@ def fetch_config():
 def get_config():
     return DATA.get('config')
 
+
+def copy_default_config(config_path):
+    if os.path.exists(config_path):
+        APP.logger.info(f"Configuration file found at {config_path}")
+        return True
+    
+    default_config_path = os.path.join('resources', 'config.toml')
+    if os.path.exists(default_config_path):
+        os.makedirs(os.path.dirname(config_path), exist_ok=True)
+        
+        with open(default_config_path, 'r') as src, open(config_path, 'w') as dst:
+            dst.write(src.read())
+        
+        APP.logger.info(f"Default configuration copied to {config_path}")
+        return True
+    else:
+        APP.logger.error(f"Default configuration not found at {default_config_path}")
+        return False
+
+
 if __name__ == '__main__':
-    if not os.path.exists(DBC_CONFIG_PATH):
-        raise Exception("DBC config file not found!")
+    if not copy_default_config(DBC_CONFIG_PATH):
+        raise Exception(f"Failed to find or create configuration at {DBC_CONFIG_PATH}")
 
     fetch_config()
 

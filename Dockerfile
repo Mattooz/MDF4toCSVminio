@@ -42,6 +42,7 @@ ENV MINIO_USER=minioadmin \
     MINIO_PSW=minioadmin \
     MINIO_URL=minio:9000 \
     CONFIG_PATH=resources/config.toml
+    CONFIG_VOLUME=resources
 
 # Command to run the application
 CMD ["python", "main.py"]
