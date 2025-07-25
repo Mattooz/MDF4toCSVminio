@@ -14,8 +14,10 @@ MINIO           = Minio(endpoint=os.environ['MINIO_URL'], access_key=os.environ[
 TMP_FOLDER      = os.path.join('.', 'tmp')
 OUTPUT_BUCKET   = 'output'
 
+DBC_VOLUME      = os.environ['DBC_VOLUME']
+
 CONFIG_VOLUME      = os.environ['CONFIG_VOLUME']
-DBC_CONFIG_PATH    = os.environ['CONFIG_PATH']
+CONFIG_PATH    = os.environ['CONFIG_PATH']
 
 DATA = {}
 
@@ -91,35 +93,56 @@ def setup():
     os.makedirs(TMP_FOLDER, exist_ok=True)
 
 def fetch_config():
-    with open(DBC_CONFIG_PATH, 'r') as f:
+    with open(CONFIG_PATH, 'r') as f:
         DATA['config'] = toml.load(f)
 
 def get_config():
     return DATA.get('config')
 
 
-def copy_default_config(config_path):
+def copy_defaults(config_path):
+    config_ok = True
+    dbc_ok = True
+    
     if os.path.exists(config_path):
         APP.logger.info(f"Configuration file found at {config_path}")
-        return True
-    
-    default_config_path = os.path.join('resources', 'config.toml')
-    if os.path.exists(default_config_path):
-        os.makedirs(os.path.dirname(config_path), exist_ok=True)
-        
-        with open(default_config_path, 'r') as src, open(config_path, 'w') as dst:
-            dst.write(src.read())
-        
-        APP.logger.info(f"Default configuration copied to {config_path}")
-        return True
     else:
-        APP.logger.error(f"Default configuration not found at {default_config_path}")
-        return False
+        default_config_path = os.path.join('resources', 'config.toml')
+        if os.path.exists(default_config_path):
+            os.makedirs(os.path.dirname(config_path), exist_ok=True)
+            
+            with open(default_config_path, 'r') as src, open(config_path, 'w') as dst:
+                dst.write(src.read())
+            
+            APP.logger.info(f"Default configuration copied to {config_path}")
+        else:
+            APP.logger.error(f"Default configuration not found at {default_config_path}")
+            config_ok = False
+    
+    default_dbc_filename = '11-bit-OBD2-v4.0.dbc'
+    default_dbc_path = os.path.join('resources', default_dbc_filename)
+    target_dbc_path = os.path.join(DBC_VOLUME, default_dbc_filename)
+    
+    if os.path.exists(target_dbc_path):
+        APP.logger.info(f"DBC file found at {target_dbc_path}")
+    else:
+        if os.path.exists(default_dbc_path):
+            os.makedirs(os.path.dirname(target_dbc_path), exist_ok=True)
+            
+            with open(default_dbc_path, 'rb') as src, open(target_dbc_path, 'wb') as dst:
+                dst.write(src.read())
+            
+            APP.logger.info(f"Default DBC file copied to {target_dbc_path}")
+        else:
+            APP.logger.error(f"Default DBC file not found at {default_dbc_path}")
+            dbc_ok = False
+    
+    return config_ok and dbc_ok
 
 
 if __name__ == '__main__':
-    if not copy_default_config(DBC_CONFIG_PATH):
-        raise Exception(f"Failed to find or create configuration at {DBC_CONFIG_PATH}")
+    if not copy_defaults(CONFIG_PATH):
+        raise Exception(f"Failed to find or create defaults at {CONFIG_PATH}")
 
     fetch_config()
 
