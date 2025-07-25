@@ -33,7 +33,8 @@ EXPOSE 5000/udp
 
 # Set environment variables for MinIO (these will be overridden at runtime)
 ENV MINIO_USER=minioadmin \
-    MINIO_PSW=minioadmin
+    MINIO_PSW=minioadmin \
+    MINIO_URL=minio:9000
 
 # Command to run the application
 CMD ["python", "main.py"]
