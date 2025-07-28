@@ -23,3 +23,13 @@
 |
 \-  non penso sia strettamente necessario, ma andrebbe creato un playbook ansible che tira scarica tutte le dipendenze e tiri su tutti i servizi e nel caso questo progetto entrasse in produzione sarebbe necessario migrare tutto su docker swarm o su
     qualche altro orchestratore
+
+25-28/07
+
+- MIGLIORATO WEBHOOK
+\-  In questi due giorni ho migliorato l'app del webhook aggiungendo varie configurazioni.
+|   \- adesso si possono aggiungere i file DBC facilmente tramite una configurazione
+|   \- si possono meglio configurare i volumi del container docker
+|
+\-  adesso vanno trovati tutti i file DBC rilevanti e aggiunti alla configurazione
+\-  entro venerdì monterò questo programma sulla VM del lab, e farò in modo di configurare logger can
