@@ -143,9 +143,12 @@ def copy_default(src: str, dst: str, ftype: Literal['DBC', 'config']) -> bool:
 
 
 if __name__ == '__main__':
+    if not copy_defaults(CONFIG_PATH):
+        raise Exception("Could not copy defaults! Check your docker compose configuration!"
+                        f"Currently:\n\tconfig={CONFIG_PATH},\n\tconfig_volume={CONFIG_VOLUME},\n\tdbc_volume={DBC_VOLUME}")
+
+    fetch_config()
+
     APP.run(host='0.0.0.0', port=5000, debug=True)
     APP.logger.info("Server started")
 
-    print(copy_defaults(CONFIG_PATH))
-
-    fetch_config()
