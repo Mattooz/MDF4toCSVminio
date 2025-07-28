@@ -72,11 +72,11 @@ def handle_mdf(mdf: MDF, name: str):
         # Fallback to default DBC file in /dbc volume
         dbc_files.append((os.path.join('/dbc', '11-bit-OBD2-v4.0.dbc'), 0))
 
-    decoded = mdf.extract_bus_logging(
-        database_files={
+    database_files = {
             "CAN": [(os.path.join('/dbc', '11-bit-OBD2-v4.0.dbc'), 0), (os.path.join('/dbc', 'canedge_gps.dbc'), 9)]
-        }
-    )
+    }
+
+    decoded = mdf.extract_bus_logging(database_files)
 
     path = get_mdf_path(name, 'output')
     decoded.export(fmt='csv', filename=path, single_time_base=True, delimiter=',', quotechar='"', escapechar='\\')
