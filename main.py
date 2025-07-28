@@ -41,6 +41,12 @@ def handle():
             name = basename(obj)
             mdf_out_path = get_mdf_path(name, 'output', 'csv')
 
+            if os.path.exists(mdf_out_path):
+                os.remove(mdf_out_path)
+
+            if os.path.exists(mdf_in_path):
+                os.remove(mdf_in_path)
+
             MINIO.fget_object(bucket, obj, mdf_in_path)
 
             with open(mdf_in_path, 'rb+') as mdf_in_file, MDF(mdf_in_file) as mdf_in:
