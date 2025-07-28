@@ -147,8 +147,8 @@ def copy_defaults(config_path):
 
 
 if __name__ == '__main__':
-    with open('./resources/11-bit-OBD2-v4.0.dbc', 'r') as f:
-        print(f.read())
+    path = './resources/11-bit-OBD2-v4.0.dbc'
+    print(os.path.exists(path))
 
     APP.run(host='0.0.0.0', port=5000, debug=True)
     APP.logger.info("Server started")
