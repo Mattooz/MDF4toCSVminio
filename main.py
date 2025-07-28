@@ -14,8 +14,8 @@ MINIO = Minio(endpoint=os.environ['MINIO_URL'], access_key=os.environ['MINIO_USE
 TMP_FOLDER = os.path.join('.', 'tmp')
 OUTPUT_BUCKET = 'output'
 
-DEFAULT_CONFIG_PATH = os.path.join('.', 'resources', 'config.toml')
-DEFAULT_DBC_PATH = os.path.join('.', 'resources', '11-bit-OBD2-v4.0.dbc')
+DEFAULT_CONFIG_PATH = os.path.join('resources', 'config.toml')
+DEFAULT_DBC_PATH = os.path.join('resources', '11-bit-OBD2-v4.0.dbc')
 
 DBC_VOLUME = os.environ['DBC_VOLUME']
 
