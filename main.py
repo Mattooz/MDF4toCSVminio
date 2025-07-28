@@ -6,6 +6,7 @@ import os
 from flask import Flask, request
 from minio import Minio
 import re
+import requests
 import toml
 
 APP = Flask(__name__)
@@ -58,12 +59,11 @@ def handle_mdf(mdf: MDF, name: str):
     config = DATA['config'] if 'config' in DATA else None
     if config is None:
         APP.logger.warning("No config found, using default DBC file")
-    dbc_volume = config['dbc']['volume'] if config and 'dbc' in config and 'volume' in config['dbc'] else '/dbc'
     dbc_files = []
 
     if config and 'dbc' in config and 'src' in config['dbc']:
         for dbc_src in config['dbc']['src']:
-            dbc_files.append((os.path.join(dbc_volume, dbc_src['filepath']), dbc_src['can_bus_channel']))
+            dbc_files.append((os.path.join(DBC_VOLUME, dbc_src['filepath']), dbc_src['can_bus_channel']))
     else:
         # Fallback to default DBC file in /dbc volume
         dbc_files.append((os.path.join('/dbc', '11-bit-OBD2-v4.0.dbc'), 0))
@@ -141,6 +141,35 @@ def copy_default(src: str, dst: str, ftype: Literal['DBC', 'config']) -> bool:
         ok = False
     return ok
 
+def download_dbcs():
+    print("Downloading DBC files...")
+    if get_config() is None:
+        raise Exception("No config found!")
+
+    config = get_config()
+    dbc_src = config['dbc']['src'] if config and 'dbc' in config and 'src' in config['dbc'] else []
+
+    for dbc in dbc_src:
+        origin = dbc['origin'] if 'origin' in dbc else None
+        if origin is None:
+            print(f"No origin found for DBC file '{dbc['filepath']}', skipping download")
+            continue
+
+        r = requests.get(origin)
+        r.raise_for_status()
+
+        content = r.content
+
+
+        if not os.path.exists(os.path.dirname(dbc['filepath'])):
+            with open(os.path.join(DBC_VOLUME, dbc['filepath']), 'w') as f:
+                f.write(content.decode('utf-8'))
+
+            print(f"Downloaded DBC file to {dbc['filepath']}")
+        else:
+            print(f"DBC file already exists at {dbc['filepath']}, skipping download")
+
+
 
 if __name__ == '__main__':
     if not copy_defaults(CONFIG_PATH):
@@ -148,6 +177,7 @@ if __name__ == '__main__':
                         f"Currently:\n\tconfig={CONFIG_PATH},\n\tconfig_volume={CONFIG_VOLUME},\n\tdbc_volume={DBC_VOLUME}")
 
     fetch_config()
+    download_dbcs()
 
     APP.run(host='0.0.0.0', port=5000, debug=True)
     APP.logger.info("Server started")

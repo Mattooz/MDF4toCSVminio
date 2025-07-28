@@ -2,3 +2,4 @@ asammdf
 flask
 minio
 toml
+requests
