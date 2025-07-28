@@ -79,7 +79,7 @@ def handle_mdf(mdf: MDF, name: str):
         dbc_files.append((os.path.join('/dbc', '11-bit-OBD2-v4.0.dbc'), 0))
 
     database_files = {
-            "CAN": [(os.path.join('/dbc', '11-bit-OBD2-v4.0.dbc'), 0), (os.path.join('/dbc', 'canedge_gps.dbc'), 9)]
+            "CAN": [(os.path.join('/dbc', '11-bit-OBD2-v4.0.dbc'), 0)]
     }
 
     decoded = mdf.extract_bus_logging(database_files)
