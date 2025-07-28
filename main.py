@@ -69,6 +69,9 @@ def handle_mdf(mdf: MDF, name: str):
         # Fallback to default DBC file in /dbc volume
         dbc_files.append((os.path.join('/dbc', '11-bit-OBD2-v4.0.dbc'), 0))
 
+    for channel in mdf.iter_channels():
+        print(f'{channel.attachment}')
+
     decoded = mdf.extract_bus_logging(
         database_files={
             "CAN": dbc_files
