@@ -64,6 +64,7 @@ def handle_mdf(mdf: MDF, name: str):
     if config and 'dbc' in config and 'src' in config['dbc']:
         for dbc_src in config['dbc']['src']:
             dbc_files.append((os.path.join(DBC_VOLUME, dbc_src['filepath']), dbc_src['can_bus_channel']))
+            print(f'Loaded DBC file {dbc_src["filepath"]} with channel {dbc_src["can_bus_channel"]}')
     else:
         # Fallback to default DBC file in /dbc volume
         dbc_files.append((os.path.join('/dbc', '11-bit-OBD2-v4.0.dbc'), 0))
@@ -160,8 +161,7 @@ def download_dbcs():
 
         content = r.content
 
-
-        if not os.path.exists(os.path.dirname(dbc['filepath'])):
+        if not os.path.exists(os.path.join(DBC_VOLUME, dbc['filepath'])):
             with open(os.path.join(DBC_VOLUME, dbc['filepath']), 'w') as f:
                 f.write(content.decode('utf-8'))
 
