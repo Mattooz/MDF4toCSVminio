@@ -132,7 +132,7 @@ def copy_defaults(config_path):
     if os.path.exists(target_dbc_path):
         print(f"DBC file found at {target_dbc_path}")
     else:
-        dbc_ok = copy_default(DEFAULT_CONFIG_PATH, target_dbc_path, 'DBC')
+        dbc_ok = copy_default(DEFAULT_DBC_PATH, target_dbc_path, 'DBC')
 
     return config_ok and dbc_ok
 
