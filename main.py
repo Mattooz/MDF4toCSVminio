@@ -63,7 +63,10 @@ def handle_mdf(mdf: MDF, name: str):
 
     if config and 'dbc' in config and 'src' in config['dbc']:
         for dbc_src in config['dbc']['src']:
-            dbc_files.append((os.path.join(DBC_VOLUME, dbc_src['filepath']), dbc_src['can_bus_channel']))
+            if dbc_src['can_bus_channel'] == 'all':
+                dbc_files.append((os.path.join(DBC_VOLUME, dbc_src['filepath']), None))
+            else:
+                dbc_files.append((os.path.join(DBC_VOLUME, dbc_src['filepath']), dbc_src['can_bus_channel']))
             print(f'Loaded DBC file {dbc_src["filepath"]} with channel {dbc_src["can_bus_channel"]}')
     else:
         # Fallback to default DBC file in /dbc volume
