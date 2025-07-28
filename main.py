@@ -113,14 +113,14 @@ def copy_defaults(config_path):
     dbc_ok = True
 
     if os.path.exists(config_path):
-        APP.logger.info(f"Configuration file found at {config_path}")
+        print(f"Configuration file found at {config_path}")
     else:
         config_ok = copy_default(DEFAULT_DBC_PATH, config_path, 'config')
 
     target_dbc_path = os.path.join(DBC_VOLUME, os.path.basename(DEFAULT_DBC_PATH))
 
     if os.path.exists(target_dbc_path):
-        APP.logger.info(f"DBC file found at {target_dbc_path}")
+        print(f"DBC file found at {target_dbc_path}")
     else:
         dbc_ok = copy_default(DEFAULT_CONFIG_PATH, target_dbc_path, 'DBC')
 
@@ -135,9 +135,9 @@ def copy_default(src: str, dst: str, ftype: Literal['DBC', 'config']) -> bool:
         with open(src, 'r') as src, open(dst, 'w') as dst:
             dst.write(src.read())
 
-        APP.logger.info(f"Default {ftype} file copied to {dst}")
+        print(f"Default {ftype} file copied to {dst}")
     else:
-        APP.logger.error(f"Default {ftype} file not found at {src}")
+        print(f"Default {ftype} file not found at {src}")
         ok = False
     return ok
 
@@ -146,7 +146,6 @@ if __name__ == '__main__':
     APP.run(host='0.0.0.0', port=5000, debug=True)
     APP.logger.info("Server started")
 
-    if not copy_defaults(CONFIG_PATH):
-        raise Exception(f"Failed to find or create defaults at {CONFIG_PATH}")
+    print(copy_defaults(CONFIG_PATH))
 
     fetch_config()
