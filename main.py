@@ -1,5 +1,6 @@
 import os
 import re
+from os import makedirs
 from typing import Literal
 from urllib.parse import unquote
 
@@ -39,9 +40,14 @@ def handle():
 
             obj = unquote(obj)
 
+            if '.MF4' not in obj:
+                APP.logger.info(f"Skipping unknown file type! Bucket: '{bucket}', File: '{obj}'.")
+                continue
+
             APP.logger.info(f"Processing new file! Bucket: '{bucket}', File: '{obj}'.")
 
             mdf_in_path = get_mdf_path(obj, 'input')
+            makedirs(mdf_in_path, exist_ok=True)
             name = basename(obj)
             mdf_out_path = get_mdf_path(name, 'output', 'csv')
 
@@ -98,12 +104,21 @@ def handle_mdf(mdf: MDF, name: str):
 
 def get_mdf_path(file_name: str, io: Literal['input', 'output'], extension: Literal['csv', 'mdf', None] = None):
     if io == 'input':
-        return os.path.join(TMP_FOLDER, 'mdf_in_' + file_name)
+        path = os.path.join(TMP_FOLDER, 'mdf_in_' + file_name)
+        makedirs(path, exist_ok=True)
+
+        return path
     elif io == 'output':
         if extension is not None:
-            return os.path.join(TMP_FOLDER, 'mdf_out_' + file_name + '.' + extension)
+            path = os.path.join(TMP_FOLDER, 'mdf_out_' + file_name + '.' + extension)
+            makedirs(path, exist_ok=True)
+
+            return path
         else:
-            return os.path.join(TMP_FOLDER, 'mdf_out_' + file_name)
+            path = os.path.join(TMP_FOLDER, 'mdf_out_' + file_name)
+            makedirs(path, exist_ok=True)
+
+            return path
     else:
         raise Exception("Invalid IO id")
 
