@@ -190,19 +190,19 @@ def download_dbcs():
 
 if __name__ == '__main__':
     if not DEBUG:
-        if not copy_defaults(CONFIG_PATH):
-            raise Exception("Could not copy defaults! Check your docker compose configuration!"
-                            f"Currently:\n\tconfig={CONFIG_PATH},\n\tconfig_volume={CONFIG_VOLUME},\n\tdbc_volume={DBC_VOLUME}")
-
-        fetch_config()
-        download_dbcs()
-
         # setup minio and globals
         MINIO = Minio(endpoint=os.environ['MINIO_URL'], access_key=os.environ['MINIO_USER'], secret_key=os.environ['MINIO_PSW'],
               secure=False)
         DBC_VOLUME = os.environ['DBC_VOLUME']
         CONFIG_VOLUME = os.environ['CONFIG_VOLUME']
         CONFIG_PATH = os.environ['CONFIG_PATH']
+
+        if not copy_defaults(CONFIG_PATH):
+            raise Exception("Could not copy defaults! Check your docker compose configuration!"
+                            f"Currently:\n\tconfig={CONFIG_PATH},\n\tconfig_volume={CONFIG_VOLUME},\n\tdbc_volume={DBC_VOLUME}")
+
+        fetch_config()
+        download_dbcs()
 
         APP.run(host='0.0.0.0', port=5000, debug=True)
         APP.logger.info("Server started")
