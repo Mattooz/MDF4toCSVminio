@@ -8,6 +8,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     VIRTUAL_ENV=/app/venv
 
+
+RUN apk add gcc g++ make linux-headers libstdc++
+
 # Create virtual environment
 RUN python -m venv /app/venv
 
