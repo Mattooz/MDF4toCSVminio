@@ -62,7 +62,7 @@ def handle():
             with open(mdf_in_path, 'rb+') as mdf_in_file, MDF(mdf_in_file) as mdf_in:
                 handle_mdf(mdf_in, name)
 
-            MINIO.fput_object(OUTPUT_BUCKET, os.path.basename(mdf_out_path), mdf_out_path)
+            MINIO.fput_object(OUTPUT_BUCKET, obj.replace('.MF4', '.csv'), mdf_out_path)
 
             APP.logger.info(f"Done processing! Uploaded file '{mdf_out_path}' to bucket '{OUTPUT_BUCKET}'")
     except Exception as e:
