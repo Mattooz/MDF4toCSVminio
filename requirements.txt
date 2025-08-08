@@ -3,3 +3,4 @@ flask
 minio
 toml
 requests
+xmltodict

@@ -1,30 +1,32 @@
-from fileinput import filename
-from typing import Literal
-
-from asammdf import MDF
 import os
-from flask import Flask, request
-from minio import Minio
 import re
+from typing import Literal
+from urllib.parse import unquote
+
 import requests
 import toml
+from asammdf import MDF
+from flask import Flask, request
+from minio import Minio
 
 APP = Flask(__name__)
-MINIO = Minio(endpoint=os.environ['MINIO_URL'], access_key=os.environ['MINIO_USER'], secret_key=os.environ['MINIO_PSW'],
-              secure=False)
+
+DEBUG = False
+
+MINIO = None
+
 TMP_FOLDER = os.path.join('.', 'tmp')
 OUTPUT_BUCKET = 'output'
 
 DEFAULT_CONFIG_PATH = os.path.join('resources', 'config.toml')
 DEFAULT_DBC_PATH = os.path.join('resources', '11-bit-OBD2-v4.0.dbc')
 
-DBC_VOLUME = os.environ['DBC_VOLUME']
+DBC_VOLUME = None
 
-CONFIG_VOLUME = os.environ['CONFIG_VOLUME']
-CONFIG_PATH = os.environ['CONFIG_PATH']
+CONFIG_VOLUME = None
+CONFIG_PATH = None
 
 DATA = {}
-
 
 @APP.route(rule='/mdf-handle', methods=['POST'])
 def handle():
@@ -34,6 +36,8 @@ def handle():
         for record in event.get('Records', []):
             bucket = record['s3']['bucket']['name']
             obj = record['s3']['object']['key']
+
+            obj = unquote(obj)
 
             APP.logger.info(f"Processing new file! Bucket: '{bucket}', File: '{obj}'.")
 
@@ -75,8 +79,7 @@ def handle_mdf(mdf: MDF, name: str):
                 dbc_files.append((os.path.join(DBC_VOLUME, dbc_src['filepath']), dbc_src['can_bus_channel']))
             print(f'Loaded DBC file {dbc_src["filepath"]} with channel {dbc_src["can_bus_channel"]}')
     else:
-        # Fallback to default DBC file in /dbc volume
-        dbc_files.append((os.path.join('/dbc', '11-bit-OBD2-v4.0.dbc'), 0))
+        dbc_files.append((os.path.join('resources' if DEBUG else '/dbc', '11-bit-OBD2-v4.0.dbc'), 0))
 
     database_files = {
             "CAN": dbc_files
@@ -85,7 +88,12 @@ def handle_mdf(mdf: MDF, name: str):
     decoded = mdf.extract_bus_logging(database_files)
 
     path = get_mdf_path(name, 'output')
-    decoded.export(fmt='csv', filename=path, single_time_base=True, delimiter=',', quotechar='"', escapechar='\\')
+
+    if not DEBUG:
+        decoded.export(fmt='csv', filename=path, single_time_base=True, delimiter=',', quotechar='"', escapechar='\\')
+        return None
+    else:
+        return decoded
 
 
 def get_mdf_path(file_name: str, io: Literal['input', 'output'], extension: Literal['csv', 'mdf', None] = None):
@@ -181,13 +189,22 @@ def download_dbcs():
 
 
 if __name__ == '__main__':
-    if not copy_defaults(CONFIG_PATH):
-        raise Exception("Could not copy defaults! Check your docker compose configuration!"
-                        f"Currently:\n\tconfig={CONFIG_PATH},\n\tconfig_volume={CONFIG_VOLUME},\n\tdbc_volume={DBC_VOLUME}")
+    if not DEBUG:
+        if not copy_defaults(CONFIG_PATH):
+            raise Exception("Could not copy defaults! Check your docker compose configuration!"
+                            f"Currently:\n\tconfig={CONFIG_PATH},\n\tconfig_volume={CONFIG_VOLUME},\n\tdbc_volume={DBC_VOLUME}")
 
-    fetch_config()
-    download_dbcs()
+        fetch_config()
+        download_dbcs()
 
-    APP.run(host='0.0.0.0', port=5000, debug=True)
-    APP.logger.info("Server started")
+        # setup minio and globals
+        MINIO = Minio(endpoint=os.environ['MINIO_URL'], access_key=os.environ['MINIO_USER'], secret_key=os.environ['MINIO_PSW'],
+              secure=False)
+        DBC_VOLUME = os.environ['DBC_VOLUME']
+        CONFIG_VOLUME = os.environ['CONFIG_VOLUME']
+        CONFIG_PATH = os.environ['CONFIG_PATH']
+
+        APP.run(host='0.0.0.0', port=5000, debug=True)
+        APP.logger.info("Server started")
+
 
