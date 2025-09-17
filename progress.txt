@@ -33,3 +33,33 @@
 |
 \-  adesso vanno trovati tutti i file DBC rilevanti e aggiunti alla configurazione
 \-  entro venerdì monterò questo programma sulla VM del lab, e farò in modo di configurare logger can
+
+TUTTO AGOSTO e INIZIO SETTEMBRE
+
+- DATI MANCANTI
+\-  In questo periodo ho cercato di migliorare il software che permetteva di estrarre i dati dai file MF4. Sfortunatamente, mi sono accorto
+|   che i dati che estraevo non erano tutti quelli che mi aspettavo, ma non riesco a capire il motivo. Per capire un po' meglio farò una 
+|   breve disamina su tutto quello che ho fatto e sto facendo.
+|   \-  I file che il dispositivo logger produce sono file MDF4, definiti dallo standard ASAM MDF. Questo standard non è disponibile al
+|   |   pubblico e costa €1300. Il formato MDF4 è binario e si divide in blocchi che hanno varie sezioni e campi, e sono concatenati al
+|   |   vicenda. I file MDF4 provenienti dal logger sono "raw" e contengono solamente i messaggi del CAN (e LIN) BUS. Questi messaggi grezzi
+|   |   devono essere decodificati per avere alcun senso. Per questo si usano ->
+|   \-  FILE DBC. I file DBC sono "database" che contengono le istruzioni per decodificare i vari segnali che sono presenti nei messaggi CAN
+|   |   grezzi. Sono proprietari, definiti dalla casa produttrice del veicolo, e non disponibili al pubblico. Visto che il CAN BUS esiste da
+|   |   decenni ormai, alcuni segnali più comuni sono diventati quasi standard ed esistono dei DBC "generali" che riescono ad estrarli da
+|   |   quasi tutti i veicoli. Ma il formato MDF non è uno standard disponibile al pubblico (se non dietro pagamento di €1300), dunque come
+|   |   si può procedere? Fortunatamente esistono delle librerie open-source che permettono di fare proprio questo ->
+|   \-  ASAMMDF è una libreria open-source, scritta in python, che permette la lettura, modifica e soprattutto la decodifica dei file MDF4 e
+|       la sto usando proprio per questo scopo.
+|
+\-  Chiaramente, conscio del fatto che entrambi formato di file e database di decodifica sono proprietari e difficilmente accessibili da 
+|   plebei come me, non ci si poteva aspettare di poter estrarre tutti i dati del veicolo dal log, ma vista la dimensione del DBC "generale"
+|   non mi aspettavo di estrarre così pochi dati. Il DEBUG di questa operazione, per altro non è affatto facile, visti i motivi citati prima.
+|   Per quanto ho visto le situazioni possono essere 3:
+|   \-  1) La libreria ASAMMDF è buggata in qualche modo e non decodifica correttamente i log.
+|   \-  2) I file DBC "generali" non sono abbastanza e c'è bisogno di file DBC specifici per il veicolo (o la piattaforma su cui si basa il
+|   |   veicolo). Questo sarebbe un grave problema, visto che i DBC disponibili online sono frutto di reverse-engineering e sono disponibili |   |   soltanto per un piccolo numero di modelli di auto.
+|   \-  3) Questo è effettivamente il massimo che si può ottenere.
+|
+\-  Al momento sto cercando di capire se è possibile estrarre più dati, ma è un processo piuttosto lungo e laborioso. I dati che sono
+    riuscito ad estrarre sono, disponibili a questo link.
