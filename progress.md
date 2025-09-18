@@ -58,8 +58,16 @@ TUTTO AGOSTO e INIZIO SETTEMBRE
 |   Per quanto ho visto le situazioni possono essere 3:
 |   \-  1) La libreria ASAMMDF è buggata in qualche modo e non decodifica correttamente i log.
 |   \-  2) I file DBC "generali" non sono abbastanza e c'è bisogno di file DBC specifici per il veicolo (o la piattaforma su cui si basa il
-|   |   veicolo). Questo sarebbe un grave problema, visto che i DBC disponibili online sono frutto di reverse-engineering e sono disponibili |   |   soltanto per un piccolo numero di modelli di auto.
+|   |   veicolo). Questo sarebbe un grave problema, visto che i DBC disponibili online sono frutto di reverse-engineering e sono disponibili
+|   |   soltanto per un piccolo numero di modelli di auto.
 |   \-  3) Questo è effettivamente il massimo che si può ottenere.
 |
 \-  Al momento sto cercando di capire se è possibile estrarre più dati, ma è un processo piuttosto lungo e laborioso. I dati che sono
     riuscito ad estrarre sono, disponibili a questo link.
+
+18/09
+
+- RICONFIGURARE IL LOGGER
+\-  Il motivo per il quale ci sono pochi dati è perche sono richiesti POCHI dati dal logger...
+\-  Soluzione? Aggiungere manualmente i PID richiesti ai messaggi che il dispositivo manda all'automobile...
+    
